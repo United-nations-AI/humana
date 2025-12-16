@@ -1,16 +1,15 @@
 # Humana AI Avatar
 
-Enterprise-grade multilingual AI avatar chatbot for human rights. Serverless architecture (Azure Functions) with RAG pipeline for legal document retrieval. Web-first (Next.js), production-ready with cost-optimized Mistral API and OpenAI Whisper for high-quality voice.
+Enterprise-grade multilingual AI avatar chatbot for human rights. Serverless architecture (Azure Functions) with OpenAI integration for chat, speech-to-text, and text-to-speech. Web-first (Next.js), production-ready.
 
 ## Architecture
 
 - **apps/web**: Next.js 14 app router UI with 3D avatar (React Three Fiber)
 - **apps/api**: Azure Functions serverless API (local dev with Express)
-  - Chat: Mistral API (cost-optimized, pay-as-you-scale)
+  - Chat: OpenAI GPT-4o-mini (cost-optimized)
   - STT: OpenAI Whisper (high-quality voice transcription)
   - TTS: OpenAI TTS (natural voice output)
-  - RAG: Vector search over legal documents (pgvector + Mistral embeddings)
-- **Database**: PostgreSQL with pgvector extension (Supabase or managed Postgres)
+- **Database**: Supabase for authentication and user data
 
 ## Quick Start
 
@@ -34,7 +33,7 @@ npm run dev -w apps/web
 curl http://localhost:4000/health
 # => {"ok":true}
 
-# Chat API test (requires MISTRAL_API_KEY)
+# Chat API test (requires OPENAI_API_KEY)
 curl -X POST http://localhost:4000/v1/chat \
   -H 'Content-Type: application/json' \
   --data '{"messages":[{"role":"user","content":"Hello"}]}'
@@ -45,20 +44,14 @@ curl -X POST http://localhost:4000/v1/chat \
 Create `.env` at repo root (do NOT commit secrets):
 
 ```bash
-# Mistral API (for chat and embeddings)
-MISTRAL_API_KEY=your_mistral_api_key
-
-# OpenAI API (for Whisper STT and TTS only)
+# OpenAI API (for chat, STT, and TTS)
 OPENAI_API_KEY=sk-...
 
 # Web configuration
 WEB_ORIGIN=http://localhost:5000
 NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
 
-# Database (PostgreSQL with pgvector)
-DATABASE_URL=postgres://user:pass@host:5432/dbname
-
-# Supabase (optional, for auth)
+# Supabase (for authentication)
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 SUPABASE_JWT_SECRET=your_jwt_secret
@@ -66,21 +59,13 @@ SUPABASE_JWT_SECRET=your_jwt_secret
 
 ### How to Obtain Credentials
 
-#### Mistral API Key
-1. Sign up at [https://console.mistral.ai](https://console.mistral.ai)
-2. Navigate to API Keys
-3. Create a new API key
-4. Copy to `MISTRAL_API_KEY` in `.env`
-
-**Cost**: Pay-as-you-scale model. No upfront costs. Scales with usage.
-
-#### OpenAI API Key (for Whisper only)
+#### OpenAI API Key
 1. Create account at [https://platform.openai.com](https://platform.openai.com)
 2. Go to API Keys section
 3. Create new secret key
 4. Copy to `OPENAI_API_KEY` in `.env`
 
-**Note**: Only used for Whisper STT and TTS. Chat uses Mistral for cost optimization.
+**Usage**: Used for chat (GPT-4o-mini), Whisper STT, and TTS.
 
 #### Supabase Setup
 1. Create project at [https://supabase.com](https://supabase.com)
@@ -89,72 +74,27 @@ SUPABASE_JWT_SECRET=your_jwt_secret
 4. Copy `anon public` key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 5. Copy `JWT Secret` → `SUPABASE_JWT_SECRET` (for API auth)
 
-#### Database Setup (PostgreSQL + pgvector)
+#### Enable Email Login (Supabase)
+1. In Supabase dashboard, Authentication → Providers → Email: enable email+password and Magic Link
+2. Authentication → URL Configuration: set Site URL to your domain (e.g., `http://localhost:5000` for local)
+3. Optional: Customize email templates for verification and magic links
 
-**Option A: Supabase (Recommended)**
-1. In Supabase dashboard, go to SQL Editor
-2. Run `apps/api/sql/init-rag.sql` to create RAG tables
-3. Copy connection string from Project Settings → Database
-4. Set as `DATABASE_URL`
+## User Flow
 
-**Option B: Managed Postgres (Azure, AWS RDS, etc.)**
-1. Create PostgreSQL database
-2. Install pgvector extension: `CREATE EXTENSION vector;`
-3. Run `apps/api/sql/init-rag.sql` to create tables
-4. Set connection string as `DATABASE_URL`
+1. **Landing Page** (`/`): Users see the Humana branding and click "Login"
+2. **Login Page** (`/login`): Users enter email/password, accept Terms and Conditions, then login
+3. **Chat Page** (`/chat`): After successful login, users interact with the AI avatar via text or voice
 
-## RAG Pipeline (Legal Document Retrieval)
+## Features
 
-The RAG (Retrieval-Augmented Generation) pipeline allows the AI to answer questions using legal documents stored in the database.
-
-### Architecture
-- **Vector Database**: PostgreSQL with pgvector extension
-- **Embeddings**: Mistral embeddings API (`mistral-embed`)
-- **Retrieval**: Cosine similarity search over document embeddings
-- **Integration**: Automatically retrieves relevant context for chat responses
-
-### Admin Endpoint: Upload Documents
-
-**Endpoint**: `POST /v1/admin/rag-upload`
-
-**Authentication**: Requires Supabase JWT with `admin` role
-
-**Request**:
-```json
-{
-  "content": "Document text content...",
-  "metadata": {
-    "id": "doc-001",
-    "title": "Human Rights Declaration",
-    "source": "UN",
-    "category": "legal"
-  }
-}
-```
-
-**Response**:
-```json
-{
-  "success": true,
-  "message": "Document stored"
-}
-```
-
-### How It Works
-1. Admin uploads document via `/v1/admin/rag-upload`
-2. System generates embedding using Mistral embeddings API
-3. Document + embedding stored in `legal_documents` table
-4. When user asks a question:
-   - Query is embedded using Mistral
-   - Vector similarity search finds top 3 relevant documents
-   - Context is injected into Mistral chat prompt
-   - AI responds with accurate, source-backed answers
-
-### Database Schema
-
-See `apps/api/sql/init-rag.sql` for full schema. Key tables:
-- `legal_documents`: Stores document content, metadata, and embeddings
-- Vector index: `legal_documents_embedding_idx` for fast similarity search
+- ✅ OpenAI-powered chat (GPT-4o-mini)
+- ✅ Voice input (OpenAI Whisper)
+- ✅ Voice output (OpenAI TTS)
+- ✅ Multilingual support (10+ languages)
+- ✅ Supabase authentication
+- ✅ Terms and Conditions acceptance
+- ✅ Enterprise-grade security
+- ✅ Serverless architecture (Azure Functions)
 
 ## Deployment
 
@@ -196,9 +136,7 @@ See `apps/api/sql/init-rag.sql` for full schema. Key tables:
 2. **Set Environment Variables in Azure**
    ```bash
    az functionapp config appsettings set --name <function-app-name> --resource-group <resource-group> --settings \
-     MISTRAL_API_KEY="your_key" \
      OPENAI_API_KEY="your_key" \
-     DATABASE_URL="your_connection_string" \
      SUPABASE_JWT_SECRET="your_secret" \
      WEB_ORIGIN="https://your-domain.com"
    ```
@@ -214,57 +152,13 @@ See `apps/api/sql/init-rag.sql` for full schema. Key tables:
    - Visit: `https://<function-app-name>.azurewebsites.net/api/health`
    - Should return: `{"ok":true}`
 
-#### Azure Functions Structure
-- `src/index.ts`: Function definitions (Azure Functions)
-- `src/handlers/`: Individual handler functions
-- `src/lib/`: Shared utilities (Mistral, RAG, auth)
-- `host.json`: Azure Functions configuration
-- `local.settings.json`: Local development settings (not committed)
-
-#### Local Development vs Production
-- **Local**: Uses Express server (`src/local-dev.ts`) for faster iteration
-- **Production**: Uses Azure Functions (`src/index.ts`) for serverless deployment
-- Both use the same handler functions for consistency
-
-### Database (Supabase or Managed Postgres)
-
-#### Supabase (Recommended for Start)
-1. Create Supabase project
-2. Run `apps/api/sql/init-rag.sql` in SQL Editor
-3. Use connection string from Project Settings
-
-#### Azure Database for PostgreSQL
-1. Create PostgreSQL server in Azure
-2. Enable pgvector extension
-3. Run `apps/api/sql/init-rag.sql`
-4. Configure firewall rules
-5. Use connection string as `DATABASE_URL`
-
-## Cost Optimization
-
-### Mistral API (Chat & Embeddings)
-- **Model**: `mistral-small-latest` (cost-effective)
-- **Pricing**: Pay-as-you-scale
-- **Benefits**: No upfront costs, scales automatically
-
-### OpenAI (Whisper & TTS only)
-- **Whisper**: High-quality STT (kept for quality)
-- **TTS**: Natural voice output
-- **Usage**: Only for voice features, not chat
-
-### Serverless Architecture
-- **Azure Functions**: Pay per execution
-- **No idle costs**: Functions scale to zero
-- **Auto-scaling**: Handles traffic spikes automatically
-
 ## Security
 
 ### Implemented
 - ✅ JWT authentication (Supabase)
-- ✅ Rate limiting (per user/IP)
-- ✅ CORS restriction (WEB_ORIGIN only)
 - ✅ Input validation (Zod schemas)
 - ✅ Secure headers (CSP, HSTS, etc.)
+- ✅ CORS restriction (WEB_ORIGIN only)
 - ✅ Non-root container execution
 - ✅ Environment variable validation
 
@@ -275,32 +169,15 @@ See `apps/api/sql/init-rag.sql` for full schema. Key tables:
 - Configure WAF (Web Application Firewall) in front
 - Regular security audits
 
-## Monitoring & Scaling
-
-### Azure Application Insights
-- Automatically enabled in Azure Functions
-- Monitor function execution times
-- Track errors and performance
-- Set up alerts for anomalies
-
-### Scaling
-- **Automatic**: Azure Functions scale automatically
-- **Concurrency**: Configured in `host.json`
-- **Database**: Use connection pooling (already configured)
-- **CDN**: Use Azure Front Door or Cloudflare for static assets
-
 ## API Endpoints
 
 ### Public
 - `GET /health` - Health check
 
 ### Authenticated (Requires Supabase JWT)
-- `POST /v1/chat` - Chat with AI (Mistral + RAG)
+- `POST /v1/chat` - Chat with AI (OpenAI GPT-4o-mini)
 - `POST /v1/stt` - Speech-to-text (OpenAI Whisper)
 - `POST /v1/tts` - Text-to-speech (OpenAI TTS)
-
-### Admin Only (Requires admin role in JWT)
-- `POST /v1/admin/rag-upload` - Upload legal documents to RAG pipeline
 
 ## Code Structure
 
@@ -308,53 +185,42 @@ See `apps/api/sql/init-rag.sql` for full schema. Key tables:
 apps/
 ├── web/                    # Next.js frontend
 │   ├── app/               # App router pages
+│   │   ├── page.tsx       # Landing page
+│   │   ├── login/         # Login with Terms checkbox
+│   │   ├── chat/          # Chat interface
+│   │   ├── about/         # About page
+│   │   └── terms/         # Terms and Conditions
 │   ├── components/        # React components
-│   ├── lib/               # Utilities (Supabase client)
-│   └── i18n.ts            # Internationalization
+│   └── lib/               # Utilities (Supabase client)
 │
 └── api/                   # Azure Functions API
     ├── src/
     │   ├── index.ts       # Azure Functions definitions
     │   ├── local-dev.ts   # Express server for local dev
     │   ├── handlers/      # Request handlers
-    │   │   ├── chat.ts
-    │   │   ├── stt.ts
-    │   │   ├── tts.ts
-    │   │   └── admin-rag-upload.ts
+    │   │   ├── chat.ts    # OpenAI chat
+    │   │   ├── stt.ts     # Whisper STT
+    │   │   └── tts.ts     # OpenAI TTS
     │   └── lib/           # Shared libraries
-    │       ├── mistral.ts # Mistral API client
-    │       ├── rag.ts     # RAG pipeline
     │       └── auth.ts    # JWT verification
-    └── sql/
-        └── init-rag.sql   # Database schema
+    └── host.json          # Azure Functions config
 ```
 
 ## Troubleshooting
 
-### API returns "mistral_not_configured"
-- Check `MISTRAL_API_KEY` is set in `.env` (local) or Azure Functions settings (production)
-
-### RAG not working
-- Verify `DATABASE_URL` is correct
-- Check pgvector extension is installed: `CREATE EXTENSION vector;`
-- Verify tables exist: Run `apps/api/sql/init-rag.sql`
+### API returns "openai_not_configured"
+- Check `OPENAI_API_KEY` is set in `.env` (local) or Azure Functions settings (production)
 
 ### Authentication errors
 - Check `SUPABASE_JWT_SECRET` matches Supabase project settings
-- Verify JWT token includes required claims (role for admin endpoints)
+- Verify JWT token includes required claims
 
 ### Local dev server not starting
 - Check port 4000 is not in use: `lsof -i :4000`
 - Verify dependencies installed: `npm i -w apps/api`
 
-## Roadmap
-
-- [ ] Streaming responses for faster perceived latency
-- [ ] Multi-language RAG documents
-- [ ] Admin dashboard for document management
-- [ ] Analytics and usage tracking
-- [ ] Advanced content moderation
-- [ ] Mobile app (React Native wrapper)
+### Avatar not loading
+- The chat page uses a placeholder GLB model. Replace the URL in `AvatarCanvas.tsx` with your actual avatar file.
 
 ## License
 

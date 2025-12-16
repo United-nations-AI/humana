@@ -16,7 +16,7 @@ export default function LandingPage() {
             Chat naturally via voice or text with an AI trained to provide human rights information, guidance, and resources.
           </p>
           <div className="mt-8 flex gap-3">
-            <Link href="/chat" className="btn btn-primary">Start Chatting</Link>
+            <Link href="/login" className="btn btn-primary">Login</Link>
             <Link href="/about" className="btn btn-secondary">Learn More</Link>
           </div>
         </div>
@@ -27,4 +27,3 @@ export default function LandingPage() {
     </section>
   );
 }
-

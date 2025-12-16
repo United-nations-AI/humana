@@ -5,7 +5,6 @@ import { chatHandler } from './handlers/chat';
 import { sttHandler } from './handlers/stt';
 import { ttsHandler } from './handlers/tts';
 import { healthHandler } from './handlers/health';
-import { adminRagUploadHandler } from './handlers/admin-rag-upload';
 
 dotenv.config();
 
@@ -42,15 +41,5 @@ app.http('tts', {
     const authResult = await verifySupabaseJwt(request);
     if (authResult) return authResult;
     return ttsHandler(request, context);
-  },
-});
-
-app.http('admin-rag-upload', {
-  methods: ['POST'],
-  authLevel: 'function',
-  handler: async (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> => {
-    const authResult = await verifySupabaseJwt(request);
-    if (authResult) return authResult;
-    return adminRagUploadHandler(request, context);
   },
 });

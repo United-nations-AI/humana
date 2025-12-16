@@ -7,7 +7,6 @@ import { healthHandler } from './handlers/health';
 import { chatHandler } from './handlers/chat';
 import { sttHandler } from './handlers/stt';
 import { ttsHandler } from './handlers/tts';
-import { adminRagUploadHandler } from './handlers/admin-rag-upload';
 import { verifySupabaseJwt } from './auth';
 
 dotenv.config();
@@ -85,15 +84,6 @@ app.post('/v1/tts', async (req: Request, res: Response) => {
   } else {
     res.status(result.status || 200).json(result.jsonBody);
   }
-});
-
-app.post('/v1/admin/rag-upload', async (req: Request, res: Response) => {
-  const authError = await handleAuth(req);
-  if (authError) {
-    return res.status(authError.status).json(authError.json);
-  }
-  const result = await adminRagUploadHandler(createHttpRequest(req), createContext());
-  res.status(result.status || 200).json(result.jsonBody || result.body);
 });
 
 const port = process.env.PORT || 4000;

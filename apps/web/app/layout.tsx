@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </header>
           <main className="flex-1">{children}</main>
           <footer className="py-8 text-center text-white/60 text-sm">
-            © {new Date().getFullYear()} Humana
+            © {new Date().getFullYear()} Humana | <Link href="/terms" className="hover:text-brand-400 underline">Terms & Conditions</Link>
           </footer>
         </div>
         </I18nProvider>
