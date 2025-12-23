@@ -1,0 +1,86 @@
+# Git
+.git
+.gitignore
+
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+.pnp
+.pnp.js
+
+# Build outputs
+.next
+dist
+out
+build
+*.tsbuildinfo
+
+# Environment files (will be passed as env vars)
+.env
+.env.local
+.env*.local
+.env.development
+.env.production
+.env.test
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+logs
+
+# Cache
+.cache
+.parcel-cache
+.npm
+.eslintcache
+.stylelintcache
+.next/cache
+.turbo
+
+# Temporary
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Documentation (not needed in Docker)
+*.md
+!README.md
+docs/
+
+# Testing
+coverage/
+.nyc_output
+*.lcov
+
+# Secrets
+*.pem
+*.key
+*.cert
+*.p12
+secrets/
+.secrets/
+
+# Azure Functions (local dev)
+local.settings.json
+.azure/
+
+# Docker files (not needed inside container)
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile
+.dockerignore
+
+# IMPORTANT: Do NOT exclude apps/ directory - it's needed for the build

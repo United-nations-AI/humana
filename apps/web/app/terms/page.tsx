@@ -3,7 +3,7 @@ export default function TermsPage() {
     <div className="max-w-4xl mx-auto px-4 pt-20 pb-10">
       <div className="glass rounded-2xl p-8">
         <h1 className="text-4xl font-bold mb-6 text-white">Terms and Conditions</h1>
-        <p className="text-white/60 text-sm mb-8">Last updated: {new Date().toLocaleDateString()}</p>
+        <p className="text-white/60 text-sm mb-8">Last updated: 12/6/2025</p>
 
         <div className="space-y-6 text-white/80">
           <section>

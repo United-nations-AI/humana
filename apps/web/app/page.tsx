@@ -1,6 +1,11 @@
+"use client";
+
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function LandingPage() {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <section className="relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 pt-24 pb-16 grid md:grid-cols-2 gap-12 items-center">
@@ -21,7 +26,21 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="glass rounded-2xl p-6">
-          <div className="aspect-square rounded-xl bg-gradient-to-br from-brand-700/40 to-brand-400/20 border border-white/10" />
+          <div className="aspect-square rounded-xl overflow-hidden border border-white/10 bg-gradient-to-br from-brand-700/40 to-brand-400/20 flex items-center justify-center">
+            {!imageError ? (
+              <img 
+                src="/humana-avatar.png" 
+                alt="Humana AI Avatar" 
+                className="w-full h-full object-contain"
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <div className="text-white/40 text-sm text-center px-4">
+                Avatar image placeholder<br />
+                <span className="text-xs">Place humana-avatar.png in /public</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </section>

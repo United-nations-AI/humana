@@ -2,18 +2,27 @@
 node_modules/
 .pnp
 .pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
 
 # Testing
 coverage/
 .nyc_output
+*.lcov
 
 # Next.js
 apps/web/.next/
 apps/web/out/
 apps/web/.swc/
+apps/web/.next
+apps/web/build
+apps/web/dist
 
 # Production builds
 apps/api/dist/
+apps/api/.build/
 *.log
 *.tsbuildinfo
 
@@ -24,10 +33,13 @@ apps/api/dist/
 .env.test.local
 .env.production.local
 .env*.local
+*.env
+.env.backup
 
 # Azure Functions
 apps/api/local.settings.json
 .azure/
+.azurefunctions/
 
 # IDE
 .vscode/
@@ -35,11 +47,18 @@ apps/api/local.settings.json
 *.swp
 *.swo
 *~
-.DS_Store
+*.sublime-project
+*.sublime-workspace
 
 # OS
-Thumbs.db
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
 
 # Logs
 logs
@@ -54,29 +73,36 @@ lerna-debug.log*
 .cache/
 .parcel-cache/
 .npm
-.npm-cache/
-eslintcache
+.npm-cache
+.eslintcache
 .stylelintcache
+.next/cache
+.turbo
 
 # Temporary files
 *.tmp
 *.temp
 .tmp/
 .temp/
+*.bak
+*.swp
 
 # Build artifacts
 build/
 dist/
 *.tgz
 *.tar.gz
+*.zip
 
 # Docker
 docker-compose.override.yml
+.docker/
 
 # Database
 *.db
 *.sqlite
 *.sqlite3
+*.sql
 
 # Secrets and keys (extra safety)
 *.pem
@@ -84,10 +110,30 @@ docker-compose.override.yml
 *.cert
 *.p12
 *.pfx
+*.jks
 secrets/
 .secrets/
+*.secret
+api-keys.txt
+credentials.json
+
+# API Keys and Tokens (pattern matching)
+*api*key*
+*token*
+*secret*
+*password*
+*credential*
 
 # Package manager locks (keep package-lock.json for consistency)
 # yarn.lock
 # pnpm-lock.yaml
 
+# TypeScript
+*.tsbuildinfo
+
+# Vercel
+.vercel
+
+# Misc
+*.orig
+.cache

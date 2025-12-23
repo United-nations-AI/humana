@@ -22,7 +22,7 @@ const nextConfig = {
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: https:",
-            "connect-src 'self' " + (process.env.NEXT_PUBLIC_API_BASE_URL || ''),
+            "connect-src 'self' " + (process.env.NEXT_PUBLIC_API_BASE_URL || '') + " https://*.supabase.co https://*.supabase.in",
             "media-src 'self' blob:",
             "font-src 'self' data:",
           ].join('; ') }

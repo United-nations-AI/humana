@@ -1,29 +1,47 @@
-# Install dependencies only when needed
-FROM node:20-alpine AS deps
+FROM node:20-alpine AS base
 WORKDIR /app
-COPY ../../package.json ./
-COPY ./package.json ./apps/web/package.json
-RUN npm i --workspace apps/web --ignore-scripts
+
+# Build arguments for Next.js public environment variables
+ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+# Set environment variables for build
+ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+
+# Copy root package files for workspace support
+COPY package.json package-lock.json* ./
+
+# Copy web app files
+COPY apps/web/package.json ./apps/web/package.json
+COPY apps/web ./apps/web
+
+# Install dependencies
+RUN npm install --workspace apps/web --ignore-scripts
 
 # Build the app
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY ../../package.json ./
-COPY ./package.json ./apps/web/package.json
-COPY ./ .
-RUN npm run build -w apps/web
+WORKDIR /app/apps/web
+RUN npm run build
 
-# Production image, copy all the files and run next
+# Production stage
 FROM node:20-alpine AS runner
-WORKDIR /app
+WORKDIR /app/apps/web
 ENV NODE_ENV=production
 
-COPY --from=builder /app/apps/web/.next ./apps/web/.next
-COPY --from=builder /app/apps/web/public ./apps/web/public
-COPY --from=builder /app/apps/web/package.json ./apps/web/package.json
+RUN adduser -D -u 1001 appuser
 
-RUN adduser -D -u 1001 appuser && chown -R appuser /app
+# Copy built files
+COPY --from=base --chown=appuser:appuser /app/apps/web/.next ./.next
+COPY --from=base --chown=appuser:appuser /app/apps/web/public ./public
+COPY --from=base --chown=appuser:appuser /app/apps/web/package.json ./package.json
+COPY --from=base --chown=appuser:appuser /app/apps/web/next.config.js ./next.config.js
+COPY --from=base --chown=appuser:appuser /app/apps/web/next-i18next.config.js ./next-i18next.config.js
+COPY --from=base --chown=appuser:appuser /app/apps/web/i18n.ts ./i18n.ts
+COPY --from=base --chown=appuser:appuser /app/apps/web/tsconfig.json ./tsconfig.json
+COPY --from=base --chown=appuser:appuser /app/node_modules ./node_modules
+
 USER appuser
 EXPOSE 5000
-CMD ["npx", "next", "start", "-p", "5000", "-w", "apps/web"]
-
+CMD ["npx", "next", "start", "-p", "5000"]

@@ -13,7 +13,7 @@ app.http('health', {
   authLevel: 'anonymous',
   handler: healthHandler,
 });
-
+console.log('chat');
 app.http('chat', {
   methods: ['POST'],
   authLevel: 'function',

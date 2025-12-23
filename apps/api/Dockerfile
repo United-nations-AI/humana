@@ -9,5 +9,5 @@ RUN npm i --production=false && npm run build && adduser -D -u 1001 appuser && c
 
 USER appuser
 EXPOSE 4000
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev"]
 

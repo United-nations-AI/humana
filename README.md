@@ -1,227 +1,325 @@
 # Humana AI Avatar
 
-Enterprise-grade multilingual AI avatar chatbot for human rights. Serverless architecture (Azure Functions) with OpenAI integration for chat, speech-to-text, and text-to-speech. Web-first (Next.js), production-ready.
+Enterprise-grade multilingual AI avatar chatbot for human rights. Built with Next.js, Azure Functions, OpenAI, and Supabase.
 
-## Architecture
+## 🎯 Overview
 
-- **apps/web**: Next.js 14 app router UI with 3D avatar (React Three Fiber)
-- **apps/api**: Azure Functions serverless API (local dev with Express)
-  - Chat: OpenAI GPT-4o-mini (cost-optimized)
-  - STT: OpenAI Whisper (high-quality voice transcription)
-  - TTS: OpenAI TTS (natural voice output)
-- **Database**: Supabase for authentication and user data
+Humana AI Avatar is a comprehensive AI-powered assistant designed to provide information and guidance related to human rights. The application supports multiple languages, voice interactions, and provides a seamless chat experience with an animated avatar.
 
-## Quick Start
+## ✨ Features
 
-### Local Development
+- ✅ **AI-Powered Chat** - OpenAI GPT-4o-mini for intelligent conversations
+- ✅ **Voice Input** - OpenAI Whisper for speech-to-text transcription
+- ✅ **Voice Output** - OpenAI TTS for natural voice responses
+- ✅ **Multilingual Support** - 10+ languages including English, Spanish, French, Arabic, Russian, Italian, Malayalam, Hindi, Swahili
+- ✅ **Supabase Authentication** - Secure user authentication with email/password and magic links
+- ✅ **Modern UI** - Beautiful, responsive interface with animated avatar
+- ✅ **Terms & Conditions** - Built-in terms acceptance flow
+- ✅ **Enterprise Security** - JWT authentication, secure headers, CORS protection
 
-```bash
-# Install dependencies
-npm i
+## 🏗️ Architecture
 
-# Start API (port 4000) - local Express server
-npm run dev -w apps/api
+### Frontend (`apps/web`)
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **3D Avatar**: Image-based with lip-sync animation
+- **i18n**: Multi-language support with react-i18next
 
-# In another terminal, start Web (port 5000)
-npm run dev -w apps/web
-```
+### Backend (`apps/api`)
+- **Runtime**: Azure Functions (serverless)
+- **Local Dev**: Express server
+- **Language**: TypeScript
+- **Authentication**: Supabase JWT verification
+- **AI Services**: OpenAI API (GPT-4o-mini, Whisper, TTS)
 
-### Verify Setup
+### Infrastructure
+- **Database**: Supabase (authentication and user data)
+- **Deployment**: 
+  - Web: Vercel or similar
+  - API: Azure Functions
+- **Containerization**: Docker & Docker Compose
 
-```bash
-# API health check
-curl http://localhost:4000/health
-# => {"ok":true}
+## 🚀 Quick Start
 
-# Chat API test (requires OPENAI_API_KEY)
-curl -X POST http://localhost:4000/v1/chat \
-  -H 'Content-Type: application/json' \
-  --data '{"messages":[{"role":"user","content":"Hello"}]}'
-```
+### Prerequisites
 
-## Environment Configuration
+- Node.js 20+
+- Docker & Docker Compose (for containerized setup)
+- OpenAI API key
+- Supabase project
 
-Create `.env` at repo root (do NOT commit secrets):
+### Local Development with Docker
 
-```bash
-# OpenAI API (for chat, STT, and TTS)
-OPENAI_API_KEY=sk-...
-
-# Web configuration
-WEB_ORIGIN=http://localhost:5000
-NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
-
-# Supabase (for authentication)
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_JWT_SECRET=your_jwt_secret
-```
-
-### How to Obtain Credentials
-
-#### OpenAI API Key
-1. Create account at [https://platform.openai.com](https://platform.openai.com)
-2. Go to API Keys section
-3. Create new secret key
-4. Copy to `OPENAI_API_KEY` in `.env`
-
-**Usage**: Used for chat (GPT-4o-mini), Whisper STT, and TTS.
-
-#### Supabase Setup
-1. Create project at [https://supabase.com](https://supabase.com)
-2. Go to Project Settings → API
-3. Copy `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
-4. Copy `anon public` key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-5. Copy `JWT Secret` → `SUPABASE_JWT_SECRET` (for API auth)
-
-#### Enable Email Login (Supabase)
-1. In Supabase dashboard, Authentication → Providers → Email: enable email+password and Magic Link
-2. Authentication → URL Configuration: set Site URL to your domain (e.g., `http://localhost:5000` for local)
-3. Optional: Customize email templates for verification and magic links
-
-## User Flow
-
-1. **Landing Page** (`/`): Users see the Humana branding and click "Login"
-2. **Login Page** (`/login`): Users enter email/password, accept Terms and Conditions, then login
-3. **Chat Page** (`/chat`): After successful login, users interact with the AI avatar via text or voice
-
-## Features
-
-- ✅ OpenAI-powered chat (GPT-4o-mini)
-- ✅ Voice input (OpenAI Whisper)
-- ✅ Voice output (OpenAI TTS)
-- ✅ Multilingual support (10+ languages)
-- ✅ Supabase authentication
-- ✅ Terms and Conditions acceptance
-- ✅ Enterprise-grade security
-- ✅ Serverless architecture (Azure Functions)
-
-## Deployment
-
-### Web App (Vercel)
-
-1. **Import Repository**
-   - Go to [Vercel](https://vercel.com)
-   - Import your repository
-   - Select `apps/web` as root directory
-
-2. **Environment Variables**
-   - `NEXT_PUBLIC_API_BASE_URL`: Your Azure Functions API URL
-   - `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anon key
-
-3. **Custom Domain**
-   - Add your domain in Vercel → Domains
-   - Configure DNS as instructed
-
-4. **Deploy**
-   - Push to main branch triggers auto-deploy
-   - Or deploy manually from Vercel dashboard
-
-### API (Azure Functions - Serverless)
-
-#### Prerequisites
-- Azure account with Functions App created
-- Azure Functions Core Tools installed: `npm i -g azure-functions-core-tools`
-
-#### Deployment Steps
-
-1. **Configure Azure Functions**
+1. **Clone the repository**
    ```bash
-   cd apps/api
-   az login
-   az functionapp create --resource-group <resource-group> --consumption-plan-location <region> --runtime node --runtime-version 20 --functions-version 4 --name <function-app-name> --storage-account <storage-account>
+   git clone https://github.com/Mr-Infect/humana-AI-v2.git
+   cd humana-AI-v2
    ```
 
-2. **Set Environment Variables in Azure**
+2. **Set up environment variables**
+   
+   Create a `.env` file in the root directory:
    ```bash
-   az functionapp config appsettings set --name <function-app-name> --resource-group <resource-group> --settings \
-     OPENAI_API_KEY="your_key" \
-     SUPABASE_JWT_SECRET="your_secret" \
-     WEB_ORIGIN="https://your-domain.com"
+   # OpenAI API (required for chat, STT, and TTS)
+   OPENAI_API_KEY=sk-your-openai-api-key
+
+   # Supabase Configuration (required for authentication)
+   SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+   
+   # Web Configuration
+   WEB_ORIGIN=http://localhost:5000
+   NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
    ```
 
-3. **Deploy Functions**
+3. **Start services**
    ```bash
-   cd apps/api
-   npm run build
-   func azure functionapp publish <function-app-name>
+   docker-compose up -d
    ```
 
-4. **Verify Deployment**
-   - Visit: `https://<function-app-name>.azurewebsites.net/api/health`
-   - Should return: `{"ok":true}`
+4. **Access the application**
+   - Web App: http://localhost:5000
+   - API Health: http://localhost:4000/health
+   - Login: http://localhost:5000/login
 
-## Security
+### Local Development without Docker
 
-### Implemented
+**Terminal 1 - API:**
+```bash
+cd apps/api
+npm install
+npm run dev
+```
+
+**Terminal 2 - Web:**
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+## 📋 Environment Variables
+
+### Required Variables
+
+| Variable | Description | Where to Get It |
+|----------|-------------|-----------------|
+| `OPENAI_API_KEY` | OpenAI API key for chat, STT, TTS | [OpenAI Platform](https://platform.openai.com/api-keys) |
+| `SUPABASE_URL` | Your Supabase project URL | Supabase Dashboard → Settings → API |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (server-side only) | Supabase Dashboard → Settings → API |
+| `NEXT_PUBLIC_SUPABASE_URL` | Same as SUPABASE_URL (for client-side) | Supabase Dashboard → Settings → API |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous/public key | Supabase Dashboard → Settings → API |
+| `NEXT_PUBLIC_API_BASE_URL` | API base URL (e.g., http://localhost:4000) | - |
+| `WEB_ORIGIN` | Web app origin for CORS (e.g., http://localhost:5000) | - |
+
+### Getting Supabase Credentials
+
+1. Go to [Supabase Dashboard](https://app.supabase.com)
+2. Select your project
+3. Navigate to **Settings** → **API**
+4. Copy:
+   - **Project URL** → use for `SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_URL`
+   - **anon public** key → use for `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - **service_role** key → use for `SUPABASE_SERVICE_ROLE_KEY` (keep secret!)
+
+### Supabase Configuration
+
+1. **Enable Email Authentication**
+   - Go to Authentication → Providers → Email
+   - Enable "Email" provider
+   - Enable "Magic Link" option
+
+2. **Configure URL Settings**
+   - Go to Authentication → URL Configuration
+   - Set **Site URL**: `http://localhost:5000` (for local dev)
+   - Add **Redirect URLs**: `http://localhost:5000/chat`
+
+3. **Email Templates (Optional)**
+   - Customize email templates in Authentication → Email Templates
+   - Configure verification and magic link emails
+
+## 🔐 Security
+
+### Implemented Security Features
+
 - ✅ JWT authentication (Supabase)
 - ✅ Input validation (Zod schemas)
 - ✅ Secure headers (CSP, HSTS, etc.)
 - ✅ CORS restriction (WEB_ORIGIN only)
 - ✅ Non-root container execution
 - ✅ Environment variable validation
+- ✅ Service role key protection (server-side only)
 
 ### Best Practices
-- Rotate API keys regularly
-- Use Azure Key Vault for secrets in production
-- Enable Application Insights for monitoring
-- Configure WAF (Web Application Firewall) in front
-- Regular security audits
 
-## API Endpoints
+- ⚠️ Never commit `.env` files or API keys to Git
+- ⚠️ Use different keys for development and production
+- ⚠️ Rotate API keys regularly
+- ⚠️ Use Azure Key Vault or similar for production secrets
+- ⚠️ Enable Application Insights for monitoring
+- ⚠️ Configure WAF (Web Application Firewall) in production
+
+## 📁 Project Structure
+
+```
+humana-AI-v2/
+├── apps/
+│   ├── web/                    # Next.js frontend
+│   │   ├── app/               # App router pages
+│   │   │   ├── page.tsx       # Landing page
+│   │   │   ├── login/         # Login with Terms checkbox
+│   │   │   ├── chat/          # Chat interface
+│   │   │   ├── about/         # About page
+│   │   │   └── terms/         # Terms and Conditions
+│   │   ├── components/        # React components
+│   │   │   ├── AvatarCanvas.tsx
+│   │   │   └── LanguageSwitcher.tsx
+│   │   ├── lib/               # Utilities
+│   │   │   └── supabaseClient.ts
+│   │   └── public/            # Static assets
+│   │       └── humana-avatar.png
+│   │
+│   └── api/                   # Azure Functions API
+│       ├── src/
+│       │   ├── index.ts       # Azure Functions definitions
+│       │   ├── local-dev.ts   # Express server for local dev
+│       │   ├── auth.ts        # JWT verification
+│       │   └── handlers/      # Request handlers
+│       │       ├── chat.ts    # OpenAI chat
+│       │       ├── stt.ts     # Whisper STT
+│       │       └── tts.ts     # OpenAI TTS
+│       ├── host.json          # Azure Functions config
+│       └── local.settings.json.example
+│
+├── docker-compose.yml         # Docker Compose configuration
+├── .gitignore                 # Git ignore rules
+├── .dockerignore             # Docker ignore rules
+└── README.md                 # This file
+```
+
+## 🛠️ API Endpoints
 
 ### Public
 - `GET /health` - Health check
 
-### Authenticated (Requires Supabase JWT)
-- `POST /v1/chat` - Chat with AI (OpenAI GPT-4o-mini)
-- `POST /v1/stt` - Speech-to-text (OpenAI Whisper)
-- `POST /v1/tts` - Text-to-speech (OpenAI TTS)
+### Authenticated (Requires Supabase JWT Bearer Token)
+- `POST /v1/chat` - Chat with AI
+  ```json
+  {
+    "messages": [{"role": "user", "content": "Hello"}],
+    "language": "en"
+  }
+  ```
 
-## Code Structure
+- `POST /v1/stt` - Speech-to-text (Whisper)
+  ```json
+  {
+    "audio": "base64_encoded_audio_data"
+  }
+  ```
 
-```
-apps/
-├── web/                    # Next.js frontend
-│   ├── app/               # App router pages
-│   │   ├── page.tsx       # Landing page
-│   │   ├── login/         # Login with Terms checkbox
-│   │   ├── chat/          # Chat interface
-│   │   ├── about/         # About page
-│   │   └── terms/         # Terms and Conditions
-│   ├── components/        # React components
-│   └── lib/               # Utilities (Supabase client)
-│
-└── api/                   # Azure Functions API
-    ├── src/
-    │   ├── index.ts       # Azure Functions definitions
-    │   ├── local-dev.ts   # Express server for local dev
-    │   ├── handlers/      # Request handlers
-    │   │   ├── chat.ts    # OpenAI chat
-    │   │   ├── stt.ts     # Whisper STT
-    │   │   └── tts.ts     # OpenAI TTS
-    │   └── lib/           # Shared libraries
-    │       └── auth.ts    # JWT verification
-    └── host.json          # Azure Functions config
-```
+- `POST /v1/tts` - Text-to-speech
+  ```json
+  {
+    "text": "Hello, world",
+    "language": "en"
+  }
+  ```
 
-## Troubleshooting
+## 👤 User Onboarding
+
+### For New Users
+
+**Option 1: Magic Link (Recommended)**
+1. Go to login page
+2. Enter your email address
+3. Accept Terms and Conditions
+4. Click "Sign in with Magic Link"
+5. Check your email and click the magic link
+6. Account is automatically created and you're redirected to chat
+
+**Option 2: Sign Up**
+1. Go to login page
+2. Click "Sign Up"
+3. Enter email and password (minimum 6 characters)
+4. Accept Terms and Conditions
+5. Click "Create Account"
+6. Verify your email
+7. Return to login and sign in
+
+### For Existing Users
+
+1. Go to login page
+2. Enter email and password
+3. Accept Terms and Conditions
+4. Click "Sign In"
+
+## 🐛 Troubleshooting
 
 ### API returns "openai_not_configured"
 - Check `OPENAI_API_KEY` is set in `.env` (local) or Azure Functions settings (production)
 
 ### Authentication errors
-- Check `SUPABASE_JWT_SECRET` matches Supabase project settings
-- Verify JWT token includes required claims
+- Verify Supabase credentials are correct
+- Check `SUPABASE_SERVICE_ROLE_KEY` matches Supabase project settings
+- Ensure JWT token is included in `Authorization: Bearer <token>` header
+
+### "Supabase not configured" error
+- Verify all Supabase environment variables are set
+- For Next.js: Ensure `NEXT_PUBLIC_*` variables are available at build time
+- Rebuild Docker containers: `docker-compose build --no-cache web`
 
 ### Local dev server not starting
-- Check port 4000 is not in use: `lsof -i :4000`
-- Verify dependencies installed: `npm i -w apps/api`
+- Check port 4000 (API) and 5000 (Web) are not in use: `lsof -i :4000` or `lsof -i :5000`
+- Verify dependencies installed: `npm install`
+- Check Docker containers: `docker-compose ps`
+
+### Language switching not working
+- Hard refresh browser (Cmd+Shift+R or Ctrl+Shift+R)
+- Clear browser cache
+- Check browser console for errors
 
 ### Avatar not loading
-- The chat page uses a placeholder GLB model. Replace the URL in `AvatarCanvas.tsx` with your actual avatar file.
+- Ensure `humana-avatar.png` is in `apps/web/public/` directory
+- Check image format (PNG recommended)
+- Verify file permissions
 
-## License
+## 📚 Documentation
+
+- **Deployment Guide**: See `DEPLOYMENT_GUIDE.md` for detailed deployment instructions
+- **API Documentation**: Check inline code comments in `apps/api/src/handlers/`
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📄 License
 
 Private - All rights reserved
+
+## 🔗 Links
+
+- **Repository**: https://github.com/Mr-Infect/humana-AI-v2
+- **OpenAI**: https://platform.openai.com
+- **Supabase**: https://supabase.com
+- **Next.js**: https://nextjs.org
+- **Azure Functions**: https://azure.microsoft.com/services/functions
+
+## 📞 Support
+
+For issues or questions:
+1. Check this README and DEPLOYMENT_GUIDE.md
+2. Review Docker logs: `docker-compose logs`
+3. Check browser console for frontend errors
+4. Verify all environment variables are set correctly
+
+---
+
+**Built with ❤️ for human rights advocacy**

@@ -32,8 +32,22 @@ export async function chatHandler(
 
     const openai = new OpenAI({ apiKey: openaiApiKey });
 
+    // Map language codes to language names
+    const languageMap: Record<string, string> = {
+      'en': 'English',
+      'es': 'Spanish',
+      'fr': 'French',
+      'ar': 'Arabic',
+      'ru': 'Russian',
+      'it': 'Italian',
+      'ml': 'Malayalam',
+      'hi': 'Hindi',
+      'sw': 'Swahili',
+    };
+    const languageName = language ? (languageMap[language] || language) : 'the user\'s language';
+
     const systemPrompt = `You are Humana, a helpful human rights assistant. 
-Reply in ${language || 'the user\'s language'}. Keep responses clear and actionable.
+Reply in ${languageName}. Keep responses clear and actionable.
 Focus on providing accurate information about human rights, protections, and resources.`;
 
     const completion = await openai.chat.completions.create({
