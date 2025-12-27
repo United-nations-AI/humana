@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --background: #0b1020;
+  --background: #0f172a;
   --foreground: #e6edf3;
+  --primary: #1e3a8a;
+  --primary-light: #3b82f6;
+  --secondary: #f59e0b;
+  --accent: #10b981;
 }
 
 html, body, #__next {
@@ -13,7 +17,12 @@ html, body, #__next {
 
 body {
   color: var(--foreground);
-  background: radial-gradient(1200px 800px at 50% -20%, #1a245a55, transparent), var(--background);
+  background: 
+    radial-gradient(1200px 800px at 20% 10%, rgba(30, 58, 138, 0.15), transparent),
+    radial-gradient(1000px 600px at 80% 90%, rgba(16, 185, 129, 0.1), transparent),
+    radial-gradient(800px 500px at 50% 50%, rgba(245, 158, 11, 0.08), transparent),
+    var(--background);
+  background-attachment: fixed;
 }
 
 .glass {
@@ -27,10 +36,14 @@ body {
 }
 
 .btn-primary {
-  @apply bg-brand-600 hover:bg-brand-500 text-white;
+  @apply bg-rights-primary hover:bg-rights-primary-light text-white shadow-lg shadow-rights-primary/30;
 }
 
 .btn-secondary {
-  @apply bg-white/10 hover:bg-white/20 text-white;
+  @apply bg-white/10 hover:bg-white/20 text-white border border-white/20;
+}
+
+.btn-accent {
+  @apply bg-rights-accent hover:bg-rights-accent-light text-white shadow-lg shadow-rights-accent/30;
 }
 

@@ -21,8 +21,6 @@ apps/web/build
 apps/web/dist
 
 # Production builds
-apps/api/dist/
-apps/api/.build/
 *.log
 *.tsbuildinfo
 
@@ -36,10 +34,9 @@ apps/api/.build/
 *.env
 .env.backup
 
-# Azure Functions
-apps/api/local.settings.json
-.azure/
-.azurefunctions/
+# Deployment files (removed - using Vercel now)
+# Old Azure Functions configs removed
+# Old Docker configs removed
 
 # IDE
 .vscode/

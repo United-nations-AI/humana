@@ -2,6 +2,8 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import multer from 'multer';
 import { healthHandler } from './handlers/health';
 import { chatHandler } from './handlers/chat';
@@ -9,7 +11,12 @@ import { sttHandler } from './handlers/stt';
 import { ttsHandler } from './handlers/tts';
 import { verifySupabaseJwt } from './auth';
 
-dotenv.config();
+// Load .env from project root
+// When running from apps/api, go up two levels to project root (apps/api -> apps -> root)
+const projectRoot = path.resolve(process.cwd(), '../..');
+const envPath = path.join(projectRoot, '.env');
+dotenv.config({ path: envPath });
+console.log('Loading .env from:', envPath);
 
 const app = express();
 app.use(cors({ origin: process.env.WEB_ORIGIN || '*' }));

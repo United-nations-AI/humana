@@ -1,4 +1,4 @@
-import type { HttpRequest, HttpResponseInit } from '@azure/functions';
+import { NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 let supabaseAdmin: ReturnType<typeof createClient> | null = null;
@@ -6,12 +6,11 @@ let supabaseAdmin: ReturnType<typeof createClient> | null = null;
 function getSupabaseAdmin() {
   if (supabaseAdmin) return supabaseAdmin;
   
-  // Try SUPABASE_URL first, fallback to NEXT_PUBLIC_SUPABASE_URL (for docker-compose)
   const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   
   if (!supabaseUrl || !supabaseServiceKey) {
-    console.error('Supabase configuration missing.');
+    console.error('Supabase configuration missing:');
     console.error('SUPABASE_URL:', process.env.SUPABASE_URL ? 'SET' : 'NOT SET');
     console.error('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET' : 'NOT SET');
     console.error('SUPABASE_SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET');
@@ -29,18 +28,14 @@ function getSupabaseAdmin() {
 }
 
 export async function verifySupabaseJwt(
-  request: HttpRequest | any
-): Promise<HttpResponseInit | null> {
+  request: NextRequest
+): Promise<{ status: number; error: string; message?: string } | null> {
   try {
-    const authHeader = request.headers?.get
-      ? request.headers.get('authorization')
-      : request.headers?.authorization;
-    
-    const auth = authHeader || '';
-    const token = auth.startsWith('Bearer ') ? auth.slice('Bearer '.length) : undefined;
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice('Bearer '.length) : undefined;
     
     if (!token) {
-      return { status: 401, jsonBody: { error: 'missing_bearer_token' } };
+      return { status: 401, error: 'missing_bearer_token' };
     }
 
     const supabase = getSupabaseAdmin();
@@ -49,24 +44,19 @@ export async function verifySupabaseJwt(
     if (error || !user) {
       return { 
         status: 401, 
-        jsonBody: { 
-          error: 'invalid_token', 
-          message: error?.message || 'User not found' 
-        } 
+        error: 'invalid_token', 
+        message: error?.message || 'User not found' 
       };
     }
 
-    // Attach user to request for handlers to use
-    (request as any).user = user;
     return null;
   } catch (err: any) {
     console.error('Authentication error:', err);
     return { 
       status: 401, 
-      jsonBody: { 
-        error: 'authentication_error', 
-        message: err?.message || 'Unknown authentication error' 
-      } 
+      error: 'authentication_error', 
+      message: err?.message || 'Unknown authentication error' 
     };
   }
 }
+

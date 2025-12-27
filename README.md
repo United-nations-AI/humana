@@ -52,7 +52,7 @@ Humana AI Avatar is a comprehensive AI-powered assistant designed to provide inf
 ### Local Development with Docker
 
 1. **Clone the repository**
-   ```bash
+```bash
    git clone https://github.com/Mr-Infect/humana-AI-v2.git
    cd humana-AI-v2
    ```
@@ -60,19 +60,19 @@ Humana AI Avatar is a comprehensive AI-powered assistant designed to provide inf
 2. **Set up environment variables**
    
    Create a `.env` file in the root directory:
-   ```bash
+```bash
    # OpenAI API (required for chat, STT, and TTS)
    OPENAI_API_KEY=sk-your-openai-api-key
 
    # Supabase Configuration (required for authentication)
    SUPABASE_URL=https://your-project.supabase.co
    SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-   
+
    # Web Configuration
-   WEB_ORIGIN=http://localhost:5000
-   NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
-   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+WEB_ORIGIN=http://localhost:5000
+NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
    ```
 
 3. **Start services**
@@ -88,8 +88,8 @@ Humana AI Avatar is a comprehensive AI-powered assistant designed to provide inf
 ### Local Development without Docker
 
 **Terminal 1 - API:**
-```bash
-cd apps/api
+   ```bash
+   cd apps/api
 npm install
 npm run dev
 ```

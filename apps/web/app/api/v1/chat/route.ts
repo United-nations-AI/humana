@@ -1,6 +1,7 @@
-import type { HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions';
+import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import OpenAI from 'openai';
+import { verifySupabaseJwt } from '@/lib/auth';
 
 const schema = z.object({
   messages: z.array(z.object({
@@ -10,29 +11,37 @@ const schema = z.object({
   language: z.string().optional(),
 });
 
-export async function chatHandler(
-  request: HttpRequest,
-  context: InvocationContext
-): Promise<HttpResponseInit> {
+export async function POST(request: NextRequest) {
   try {
+    // Verify authentication
+    const authError = await verifySupabaseJwt(request);
+    if (authError) {
+      return NextResponse.json(
+        { error: authError.error, message: authError.message },
+        { status: authError.status }
+      );
+    }
+
     const body = await request.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) {
-      return {
-        status: 400,
-        jsonBody: { error: 'invalid_body', details: parsed.error.flatten() },
-      };
+      return NextResponse.json(
+        { error: 'invalid_body', details: parsed.error.flatten() },
+        { status: 400 }
+      );
     }
 
     const { messages, language } = parsed.data;
     const openaiApiKey = process.env.OPENAI_API_KEY;
     if (!openaiApiKey) {
-      return { status: 503, jsonBody: { error: 'openai_not_configured' } };
+      return NextResponse.json(
+        { error: 'openai_not_configured' },
+        { status: 503 }
+      );
     }
 
     const openai = new OpenAI({ apiKey: openaiApiKey });
 
-    // Map language codes to language names
     const languageMap: Record<string, string> = {
       'en': 'English',
       'es': 'Spanish',
@@ -62,12 +71,13 @@ When a user shares a document or file content, carefully analyze it and provide 
     });
 
     const reply = completion.choices[0]?.message?.content || '';
-    return { jsonBody: { reply } };
+    return NextResponse.json({ reply });
   } catch (err: any) {
-    context.error('Chat error:', err);
-    return {
-      status: 500,
-      jsonBody: { error: 'chat_error', message: err?.message || 'unknown' },
-    };
+    console.error('Chat error:', err);
+    return NextResponse.json(
+      { error: 'chat_error', message: err?.message || 'unknown' },
+      { status: 500 }
+    );
   }
 }
+

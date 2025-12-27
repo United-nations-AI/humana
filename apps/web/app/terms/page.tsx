@@ -2,24 +2,37 @@ export default function TermsPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 pt-20 pb-10">
       <div className="glass rounded-2xl p-8">
-        <h1 className="text-4xl font-bold mb-6 text-white">Terms and Conditions</h1>
-        <p className="text-white/60 text-sm mb-8">Last updated: 12/6/2025</p>
+        <div className="mb-8 pb-6 border-b border-white/10">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-rights-primary to-rights-accent mb-4">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-rights-primary-light to-rights-accent bg-clip-text text-transparent">Terms and Conditions</h1>
+          <p className="text-white/60 text-sm">Last updated: December 2024</p>
+        </div>
 
-        <div className="space-y-6 text-white/80">
-          <section>
-            <h2 className="text-2xl font-semibold mb-3 text-white">1. Acceptance of Terms</h2>
+        <div className="space-y-8 text-white/80">
+          <section className="p-6 rounded-xl bg-rights-primary/5 border-l-4 border-rights-primary">
+            <h2 className="text-2xl font-semibold mb-3 text-white flex items-center gap-2">
+              <span className="text-rights-primary-light">1.</span>
+              Acceptance of Terms
+            </h2>
             <p className="leading-relaxed">
-              By accessing and using Humana AI Avatar ("the Service"), you accept and agree to be bound by these Terms and Conditions. 
+              By accessing and using <strong className="text-white">AIHRP (Artificial Intelligence for Human Rights Advocacy and Analysis Program)</strong> ("the Service"), you accept and agree to be bound by these Terms and Conditions. 
               If you do not agree to these terms, please do not use the Service.
             </p>
           </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold mb-3 text-white">2. Description of Service</h2>
+          <section className="p-6 rounded-xl bg-rights-accent/5 border-l-4 border-rights-accent">
+            <h2 className="text-2xl font-semibold mb-3 text-white flex items-center gap-2">
+              <span className="text-rights-accent-light">2.</span>
+              Description of Service
+            </h2>
             <p className="leading-relaxed">
-              Humana AI Avatar is an AI-powered chatbot designed to provide information and assistance related to human rights. 
-              The Service uses artificial intelligence to respond to user queries and should not be considered a substitute for 
-              professional legal advice or official government resources.
+              AIHRP is a transformative platform designed to empower Human Rights organizations and advocates worldwide through cutting-edge AI technology. 
+              The Service uses artificial intelligence to facilitate real-time interaction, historical analysis, and actionable insights related to human rights, 
+              and should not be considered a substitute for professional legal advice or official government resources.
             </p>
           </section>
 
@@ -62,14 +75,14 @@ export default function TermsPage() {
             <h2 className="text-2xl font-semibold mb-3 text-white">6. Intellectual Property</h2>
             <p className="leading-relaxed">
               All content, features, and functionality of the Service, including but not limited to text, graphics, logos, 
-              and software, are the property of Humana and are protected by copyright, trademark, and other intellectual property laws.
+              and software, are the property of AIHRP and are protected by copyright, trademark, and other intellectual property laws.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-semibold mb-3 text-white">7. Limitation of Liability</h2>
             <p className="leading-relaxed">
-              To the maximum extent permitted by law, Humana shall not be liable for any indirect, incidental, special, 
+              To the maximum extent permitted by law, AIHRP shall not be liable for any indirect, incidental, special, 
               consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, 
               or any loss of data, use, goodwill, or other intangible losses resulting from your use of the Service.
             </p>
@@ -103,7 +116,7 @@ export default function TermsPage() {
 
         <div className="mt-8 pt-6 border-t border-white/10">
           <p className="text-white/60 text-sm">
-            By using Humana AI Avatar, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.
+            By using AIHRP, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.
           </p>
         </div>
       </div>
