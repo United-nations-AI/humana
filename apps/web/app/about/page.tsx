@@ -169,11 +169,11 @@ export default function AboutPage() {
                 Uses data interpolation and machine learning to assess the level of human rights violations in each country.
               </p>
               <ul className="space-y-2 text-white/70 text-sm">
-                <li className="flex items-start">
+          <li className="flex items-start">
                   <span className="text-rights-accent mr-2">✓</span>
                   <span>Produces risk scores and visual dashboards to help stakeholders prioritize regions and issues requiring urgent attention</span>
-                </li>
-                <li className="flex items-start">
+          </li>
+          <li className="flex items-start">
                   <span className="text-rights-accent mr-2">✓</span>
                   <span>Forecasts potential violations and provides actionable recommendations for preventive measures</span>
                 </li>
@@ -197,12 +197,12 @@ export default function AboutPage() {
                 <li className="flex items-start">
                   <span className="text-rights-accent mr-2">✓</span>
                   <span>Automates the generation of reports, infographics, and visualizations for advocacy campaigns or policy discussions</span>
-                </li>
-                <li className="flex items-start">
+          </li>
+          <li className="flex items-start">
                   <span className="text-rights-accent mr-2">✓</span>
                   <span>Provides tools to track the progress of investigations and interventions</span>
-                </li>
-              </ul>
+          </li>
+        </ul>
             </div>
           </div>
         </div>

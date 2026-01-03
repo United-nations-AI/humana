@@ -33,10 +33,20 @@ apps/web/dist
 .env*.local
 *.env
 .env.backup
+apps/web/.env.local
+apps/web/.env*
+apps/api/.env*
+apps/api/local.settings.json
+local.settings.json
 
 # Deployment files (removed - using Vercel now)
 # Old Azure Functions configs removed
 # Old Docker configs removed
+
+# Azure Functions local settings (contains secrets)
+apps/api/local.settings.json
+local.settings.json
+*.settings.json
 
 # IDE
 .vscode/
@@ -130,33 +140,7 @@ credentials.json
 
 # Vercel
 .vercel
-.vercelignore
-
-# Environment variables - CRITICAL: Never commit these!
-.env
-.env.local
-.env*.local
-*.env
-.env.backup
-apps/web/.env.local
-apps/api/.env
-apps/api/local.settings.json
-
-# Sensitive configuration files
-**/local.settings.json
-**/.env*
-**/secrets/
-**/.secrets/
-
-# API and deployment secrets
-*credentials*.json
-*config*.json
-api-keys.txt
-.secrets/
 
 # Misc
 *.orig
 .cache
-
-# PDF documents (if they contain sensitive info, uncomment next line)
-# *.pdf
