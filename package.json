@@ -8,9 +8,11 @@
   ],
   "scripts": {
     "dev": "npm run dev -w apps/web",
-    "build": "npm run build -w apps/web && npm run build -w apps/api",
+    "build": "npm run build -w apps/web",
     "start": "npm run start -w apps/web",
     "lint": "npm run lint -w apps/web"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
-
