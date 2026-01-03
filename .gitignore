@@ -130,7 +130,33 @@ credentials.json
 
 # Vercel
 .vercel
+.vercelignore
+
+# Environment variables - CRITICAL: Never commit these!
+.env
+.env.local
+.env*.local
+*.env
+.env.backup
+apps/web/.env.local
+apps/api/.env
+apps/api/local.settings.json
+
+# Sensitive configuration files
+**/local.settings.json
+**/.env*
+**/secrets/
+**/.secrets/
+
+# API and deployment secrets
+*credentials*.json
+*config*.json
+api-keys.txt
+.secrets/
 
 # Misc
 *.orig
 .cache
+
+# PDF documents (if they contain sensitive info, uncomment next line)
+# *.pdf
